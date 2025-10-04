@@ -1,0 +1,1024 @@
+{
+	"info": {
+		"_postman_id": "400c48c1-f81d-43f9-b4f2-5f3ae5481912",
+		"name": "petStore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32329634"
+	},
+	"item": [
+		{
+			"name": "TC-POST-01-addNewPet",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time should be under 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Pet ID should be an integer and cannot be empty\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.id).to.exist;\r",
+							"    pm.expect(responseJson.id).to.be.a('number');\r",
+							"    pm.expect(responseJson.id).to.not.be.null;\r",
+							"    pm.expect(responseJson.id).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Category ID should be 0 if category is an empty object\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    if (responseJson.category && Object.keys(responseJson.category).length === 0) {\r",
+							"        pm.expect(responseJson.category.id).to.equal(0);\r",
+							"    } else {\r",
+							"        pm.expect(responseJson.category).to.exist;\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Name should be a string that is not null\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.name).to.be.a('string');\r",
+							"    pm.expect(responseJson.name).to.not.be.null;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Photo URLs should be an array\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.photoUrls).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Photo URLs array should be empty if not provided\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    if (responseJson.photoUrls) {\r",
+							"        pm.expect(responseJson.photoUrls).to.have.lengthOf.at.least(0);\r",
+							"    } else {\r",
+							"        pm.expect(responseJson.photoUrls).to.deep.equal([]);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Tags should be an array of objects and can be empty\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.tags).to.be.an('array');\r",
+							"    pm.expect(responseJson.tags).to.have.lengthOf.at.least(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status should be a string and can be an empty string\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.status).to.be.a('string');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 9999,\r\n    \"category\": {\r\n        \"id\": 1,\r\n        \"name\": \"Dogs\"\r\n    },\r\n    \"name\": \"Woofie\",\r\n    \"photoUrls\": [\r\n        \"www.jillian-miller.io\"\r\n    ],\r\n    \"tags\": [\r\n        {\r\n            \"id\": 101,\r\n            \"name\": \"loyal\"\r\n        }\r\n    ],\r\n    \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-POST-05-addNewPetNameFieldIsNull",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields: code, type, and message\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.all.keys('code', 'type', 'message');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Code is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.code).to.be.a('number').and.to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Message should be a string (bad input)\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    const expectedMessage = \"bad input\";\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.message).to.be.a('string');\r",
+							"    pm.expect(expectedMessage).to.include(responseData.message)\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 9999,\r\n    \"category\": {\r\n        \"id\": 1,\r\n        \"name\": \"Dogs\"\r\n    },\r\n    \"name\": ,\r\n    \"photoUrls\": [\r\n        \"www.jillian-miller.io\"\r\n    ],\r\n    \"tags\": [\r\n        {\r\n            \"id\": 101,\r\n            \"name\": \"loyal\"\r\n        }\r\n    ],\r\n    \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-POST-10-addNewPetwithExistingId",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time should be under 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Pet ID should be an integer and cannot be empty\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.id).to.exist;\r",
+							"    pm.expect(responseJson.id).to.be.a('number');\r",
+							"    pm.expect(responseJson.id).to.not.be.null;\r",
+							"    pm.expect(responseJson.id).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Category ID should be 0 if category is an empty object\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    if (responseJson.category && Object.keys(responseJson.category).length === 0) {\r",
+							"        pm.expect(responseJson.category.id).to.equal(0);\r",
+							"    } else {\r",
+							"        pm.expect(responseJson.category).to.exist;\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Name should be a string that is not null\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.name).to.be.a('string');\r",
+							"    pm.expect(responseJson.name).to.not.be.null;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Photo URLs should be an array\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.photoUrls).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Photo URLs array should be empty if not provided\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    if (responseJson.photoUrls) {\r",
+							"        pm.expect(responseJson.photoUrls).to.have.lengthOf.at.least(0);\r",
+							"    } else {\r",
+							"        pm.expect(responseJson.photoUrls).to.deep.equal([]);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Tags should be an array of objects and can be empty\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.tags).to.be.an('array');\r",
+							"    pm.expect(responseJson.tags).to.have.lengthOf.at.least(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status should be a string and can be an empty string\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.status).to.be.a('string');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 9999,\r\n    \"category\": {\r\n        \"id\": 2,\r\n        \"name\": \"Cats\"\r\n    },\r\n    \"name\": \"Kuro\",\r\n    \"photoUrls\": [\r\n        \"http://example.com/photo.jpg\"\r\n    ],\r\n    \"tags\": [\r\n        {\r\n            \"id\": 404,\r\n            \"name\": \"active\"\r\n        }\r\n    ],\r\n    \"status\": \"sold\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-POST-11-addNewPetWithPhotoUrlsEmpty",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time should be under 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Pet ID should be an integer and cannot be empty\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.id).to.exist;\r",
+							"    pm.expect(responseJson.id).to.be.a('number');\r",
+							"    pm.expect(responseJson.id).to.not.be.null;\r",
+							"    pm.expect(responseJson.id).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Category ID should be 0 if category is an empty object\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    if (responseJson.category && Object.keys(responseJson.category).length === 0) {\r",
+							"        pm.expect(responseJson.category.id).to.equal(0);\r",
+							"    } else {\r",
+							"        pm.expect(responseJson.category).to.exist;\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Name should be a string that is not null\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.name).to.be.a('string');\r",
+							"    pm.expect(responseJson.name).to.not.be.null;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Photo URLs should be an array\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.photoUrls).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Photo URLs array should be empty if not provided\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    if (responseJson.photoUrls) {\r",
+							"        pm.expect(responseJson.photoUrls).to.have.lengthOf.at.least(0);\r",
+							"    } else {\r",
+							"        pm.expect(responseJson.photoUrls).to.deep.equal([]);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Tags should be an array of objects and can be empty\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.tags).to.be.an('array');\r",
+							"    pm.expect(responseJson.tags).to.have.lengthOf.at.least(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status should be a string and can be an empty string\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.status).to.be.a('string');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 9999,\r\n    \"category\": {\r\n        \"id\": 1,\r\n        \"name\": \"Dogs\"\r\n    },\r\n    \"name\": \"Woofie\",\r\n    \"photoUrls\": [],\r\n    \"tags\": [\r\n        {\r\n            \"id\": 101,\r\n            \"name\": \"loyal\"\r\n        }\r\n    ],\r\n    \"status\": \"available\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-POST-15-addNewPetStatusIsNotAvailPendSold",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time should be under 2 seconds\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Pet ID should be an integer and cannot be empty\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.id).to.exist;\r",
+							"    pm.expect(responseJson.id).to.be.a('number');\r",
+							"    pm.expect(responseJson.id).to.not.be.null;\r",
+							"    pm.expect(responseJson.id).to.not.equal('');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Category ID should be 0 if category is an empty object\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    if (responseJson.category && Object.keys(responseJson.category).length === 0) {\r",
+							"        pm.expect(responseJson.category.id).to.equal(0);\r",
+							"    } else {\r",
+							"        pm.expect(responseJson.category).to.exist;\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Name should be a string that is not null\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.name).to.be.a('string');\r",
+							"    pm.expect(responseJson.name).to.not.be.null;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Photo URLs should be an array\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.photoUrls).to.be.an('array');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Photo URLs array should be empty if not provided\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    if (responseJson.photoUrls) {\r",
+							"        pm.expect(responseJson.photoUrls).to.have.lengthOf.at.least(0);\r",
+							"    } else {\r",
+							"        pm.expect(responseJson.photoUrls).to.deep.equal([]);\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Tags should be an array of objects and can be empty\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.tags).to.be.an('array');\r",
+							"    pm.expect(responseJson.tags).to.have.lengthOf.at.least(0);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Status should be a string and can be an empty string\", function () {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson.status).to.be.a('string');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": 1234,\r\n    \"category\": {\r\n        \"id\": 3,\r\n        \"name\": \"Birds\"\r\n    },\r\n    \"name\": \"Cacoo\",\r\n    \"photoUrls\": [\r\n        \"www.jillian-miller.io\"\r\n    ],\r\n    \"tags\": [\r\n        {\r\n            \"id\": 202,\r\n            \"name\": \"playful\"\r\n        }\r\n    ],\r\n    \"status\": \"missing\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-GET-01-searchPetbyAvailableStatus",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the status code check\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"// Validate that the response is an array\r",
+							"pm.test(\"Response is an array and could be empty\", function () {\r",
+							"    pm.expect(response).to.be.an(\"array\");\r",
+							"    pm.expect(response.length).to.be.at.least(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/findByStatus?status=available",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "available"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-GET-02-searchPetbyPendingStatus",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the status code check\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"// Validate that the response is an array\r",
+							"pm.test(\"Response is an array and could be empty\", function () {\r",
+							"    pm.expect(response).to.be.an(\"array\");\r",
+							"    pm.expect(response.length).to.be.at.least(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/findByStatus?status=pending",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "pending"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-GET-03-searchPetbySoldStatus",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the status code check\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"// Validate that the response is an array\r",
+							"pm.test(\"Response is an array and could be empty\", function () {\r",
+							"    pm.expect(response).to.be.an(\"array\");\r",
+							"    pm.expect(response.length).to.be.at.least(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/findByStatus?status=sold",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "sold"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-GET-04-searchPetbyStatusIsNotAvailPendSold",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the status code check\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"// Validate that the response is an array\r",
+							"pm.test(\"Response is an array and could be empty\", function () {\r",
+							"    pm.expect(response).to.be.an(\"array\");\r",
+							"    pm.expect(response.length).to.be.at.least(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/findByStatus?status=missing",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "missing"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-Get-05-searchPetbyEmptyStatus",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed the status code check\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"const response = pm.response.json();\r",
+							"\r",
+							"// Validate that the response is an array\r",
+							"pm.test(\"Response is an array and could be empty\", function () {\r",
+							"    pm.expect(response).to.be.an(\"array\");\r",
+							"    pm.expect(response.length).to.be.at.least(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/findByStatus?status=",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"findByStatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-DELETE-01-deletePetbyId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields: code, type, and message\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.all.keys('code', 'type', 'message');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Code is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.code).to.be.a('number').and.to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Message should be a string (can be empty)\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.message).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/9999",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"9999"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-DELETE-02-deletePetbyNonExistId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response body is empty\", function () {\r",
+							"    pm.expect(pm.response.text()).to.be.empty;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/0",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-DELETE-03-deletePetbyInvalidId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.test(\"Response status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields: code, type, and message\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.all.keys('code', 'type', 'message');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Code is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.code).to.be.a('number').and.to.be.at.least(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Message should be a string (can be empty)\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.message).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 300ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/abc",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						"abc"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TC-DELETE-04-deletePetWithEmptyId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 405\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(405);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is less than 350ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(350);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://petstore.swagger.io/v2/pet/",
+					"protocol": "https",
+					"host": [
+						"petstore",
+						"swagger",
+						"io"
+					],
+					"path": [
+						"v2",
+						"pet",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

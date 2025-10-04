@@ -1,0 +1,7 @@
+HOW TO RUN THE POSTMAN COLLECTION
+
+1. Open POSTMAN
+2. Import the Collection
+3. Right Click the Collection and select Run
+4. Set the Iteration and Delay(ms)
+5. Click Run
